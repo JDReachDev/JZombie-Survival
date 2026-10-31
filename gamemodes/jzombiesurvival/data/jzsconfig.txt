@@ -1,0 +1,36 @@
+; ==========================================
+; JZombie Survival
+; ==========================================
+
+; --- Armi shop (formato: classe,name,prezzo,ammoclasse,munizioni,limite,tier,descrizione) ---
+weapon_pistol,Desert Eagle,150,Pistol,34,1,1,"Affidabile, economia, buoni danni"
+weapon_smg1,MP5,400,SMG1,75,1,1,"Alta cadenza, ottimo controllo"
+weapon_ar2,AK-47,1500,AR2,60,1,4,"Danno elevato, buon rateo di fuoco"
+weapon_shotgun,SPAS-12,900,Buckshot,8,1,3,"Devastante a corto raggio"
+weapon_crossbow,Crossbow,600,Crossbow,5,1,2,"Silenziosa, colpi critici potenti"
+weapon_357,Magnum .357,1200,357,6,2,1,"Un colpo, un morto (si spera)"
+weapon_rpg,RPG-7,4000,RPG_Round,1,1,6,"Anti-orde. Attenzione ai rimbalzi."
+
+; --- Barricate (formato: classe,name,prezzo,limite,tier,descrizione,health) ---
+zs_barricade_plank,Tavole di legno,80,6,1,"Barricata economica, si rompe in fretta.",300
+zs_barricade_sandbag,Sacchi di sabbia,250,4,2,"Più resistenti, buoni per coperture.",800
+zs_barricade_metal,Lamiere metalliche,600,3,4,"Massima durata, rallentano i zombie.",2000
+zs_barricade_wire,Filo spinato,150,8,2,"Danneggia e rallenta i zombie che ci passano.",400
+zs_barricade_crate,Cassa rinforzata,400,2,3,"Alta, fa da copertura e ostacolo.",1200
+zs_barricade_turret,Torretta automatica,2500,1,6,"Spara ai zombie in autonomia (munizioni finite).",600
+
+; --- Zombie per ondata (formata: onda,zombie_base,tipo1,peso1,tipo2,peso2,...) ---
+1,8,npc_zombie,1.0,npc_zombie_torso,0.25
+3,12,npc_zombie,0.75,npc_zombie_torso,0.25
+5,15,npc_zombie,0.55,npc_zombie_torso,0.25,npc_poisonzombie,0.20
+10,18,npc_zombie,0.40,npc_zombie_torso,0.30,npc_poisonzombie,0.20,npc_headcrab_fast,0.10
+15,20,npc_zombie,0.30,npc_zombie_torso,0.30,npc_poisonzombie,0.25
+
+; --- CVAR di bilanciamento (facoltativi, sovrascrivono i default) ---
+zs_startmoney,500
+zs_waveinterval,45
+zs_hordesize,8
+zs_wavescale,1.15
+zs_maxzombies,64
+zs_payoutbase,100
+zs_payoutperkill,5
