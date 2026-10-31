@@ -1,0 +1,6 @@
+"jzombiesurvival"
+{
+	"title"		"JZombie Survival"
+	"base"		"sandbox"
+	"maps"		"^gm_|^zs_"
+}
