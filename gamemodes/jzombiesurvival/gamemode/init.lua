@@ -5,6 +5,9 @@
 AddCSLuaFile("cl_init.lua")
 AddCSLuaFile("shared.lua")
 AddCSLuaFile("sh_config.lua")
+AddCSLuaFile("cl_hud.lua")
+AddCSLuaFile("cl_shop.lua")
+AddCSLuaFile("cl_notifications.lua")
 
 -- Entità custom (devono essere inviate al client per prediction/rendering)
 AddCSLuaFile("entities/base_barricade/shared.lua")
@@ -36,7 +39,7 @@ util.AddNetworkString("ZS_SellWeapon")      -- C->S: vendi arma posseduta
 -- STATO DEL GIOCO (server-side, autorevole)
 -- ============================================================================
 ZS.Wave          = 0
-ZS.State         = ZS.State.WAITING
+ZS.CurrentState  = ZS.State.WAITING   -- stato corrente (numero), NON sovrascrivere ZS.State (tabella)
 ZS.CountdownEnd  = 0
 ZS.ZombiesAlive  = 0
 ZS.PendingSpawns = 0
@@ -50,7 +53,7 @@ ZS.ActiveZombies = {}   -- set di entità zombie vive
 function ZS.BroadcastState()
     net.Start("ZS_SyncState")
         net.WriteInt(ZS.Wave, 16)
-        net.WriteShort(ZS.State)
+        net.WriteUInt(ZS.CurrentState, 8)
         net.WriteFloat(math.max(0, ZS.CountdownEnd - CurTime()))
         net.WriteInt(ZS.ZombiesAlive, 16)
     net.Broadcast()
@@ -285,7 +288,7 @@ end)
 hook.Add("OnNPCSpawn", "ZS_BlockRandomNPCs", function(npc)
     -- Blocca NPC creati fuori dal nostro controllo (spawnmenu/merge)
     -- durante la partita; gli admin possono comunque generare con zs_
-    if ZS.State == ZS.State.WAVE or ZS.State == ZS.State.BUYTIME then
+    if ZS.CurrentState == ZS.State.WAVE or ZS.CurrentState == ZS.State.BUYTIME then
         if not ZS.ActiveZombies[npc] then
             timer.Simple(0, function()
                 if IsValid(npc) and not ZS.ActiveZombies[npc] and not npc:CreatedByMap() then
@@ -304,7 +307,7 @@ end)
 -- ============================================================================
 concommand.Add("zs_placebarricade", function(ply, cmd, args)
     if not IsValid(ply) or not ply:Alive() then return end
-    if ZS.State ~= ZS.State.BUYTIME and GetConVarNumber("zs_allowbuyduringwave") == 0 then
+    if ZS.CurrentState ~= ZS.State.BUYTIME and GetConVarNumber("zs_allowbuyduringwave") == 0 then
         ply:ChatPrint("Puoi posizionare barricate solo durante il buytime.")
         return
     end

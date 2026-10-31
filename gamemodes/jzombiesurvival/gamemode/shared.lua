@@ -39,9 +39,9 @@ CreateConVar("zs_hordesize",    "8",    FCVAR_NOTIFY,  "Zombie base alla prima o
 CreateConVar("zs_spawnradius",  "2500", FCVAR_NOTIFY,  "Raggio dai bordi mappa dove spawnano gli zombie")
 CreateConVar("zs_payoutbase",   "100",  FCVAR_NOTIFY,  "Soldi base a fine ondata")
 CreateConVar("zs_payoutperkill","5",    FCVAR_NOTIFY,  "Soldi per ogni zombie ucciso")
-CreateConVar("zs_zombietype",   "npc_zombie", FCVAR_NOTIFY|FCVAR_REPLICATED, "Class NPC base degli zombie normali")
-CreateConVar("zs_fasttype",     "npc_zombie_torso", FCVAR_NOTIFY|FCVAR_REPLICATED, "Class NPC zombie veloci")
-CreateConVar("zs_poisonType",   "npc_poisonzombie", FCVAR_NOTIFY|FCVAR_REPLICATED, "Class NPC zombie velenosi")
+CreateConVar("zs_zombietype",   "npc_zombie", bit.bor(FCVAR_NOTIFY, FCVAR_REPLICATED), "Class NPC base degli zombie normali")
+CreateConVar("zs_fasttype",     "npc_zombie_torso", bit.bor(FCVAR_NOTIFY, FCVAR_REPLICATED), "Class NPC zombie veloci")
+CreateConVar("zs_poisonType",   "npc_poisonzombie", bit.bor(FCVAR_NOTIFY, FCVAR_REPLICATED), "Class NPC zombie velenosi")
 CreateConVar("zs_allowbuyduringwave", "0", FCVAR_NOTIFY, "Permette di comprare durante l'ondata")
 
 -- ============================================================================

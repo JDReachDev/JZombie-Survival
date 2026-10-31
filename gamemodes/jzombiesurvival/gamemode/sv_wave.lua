@@ -15,7 +15,7 @@ end
 -- TRANSIZIONI DI STATO
 -- ============================================================================
 function ZS.EnterBuyTime()
-    ZS.State = ZS.State.BUYTIME
+    ZS.CurrentState = ZS.State.BUYTIME
     local nextWaveSettings = ZS.GetWaveSettings(ZS.Wave + 1)
     local duration = nextWaveSettings.buytime
     ZS.CountdownEnd = CurTime() + duration
@@ -23,7 +23,7 @@ function ZS.EnterBuyTime()
     ZS.Notify("Acquisti abilitati! Prossima ondata (" .. (ZS.Wave + 1) .. ") tra " .. math.ceil(duration) .. "s", "info")
 
     timer.Create("ZS_BuyTimer", 1, 0, function()
-        if ZS.State ~= ZS.State.BUYTIME then timer.Remove("ZS_BuyTimer") return end
+        if ZS.CurrentState ~= ZS.State.BUYTIME then timer.Remove("ZS_BuyTimer") return end
         ZS.BroadcastState()
         if CurTime() >= ZS.CountdownEnd then
             timer.Remove("ZS_BuyTimer")
@@ -38,7 +38,7 @@ end
 
 function ZS.StartWave()
     ZS.Wave = ZS.Wave + 1
-    ZS.State = ZS.State.WAVE
+    ZS.CurrentState = ZS.State.WAVE
     ZS.KillsThisWave = 0
 
     local cfg = ZS.GetWaveSettings(ZS.Wave)
@@ -53,7 +53,7 @@ function ZS.StartWave()
 
     -- Spawna gradualmente usando il delay dell'ondata
     timer.Create("ZS_SpawnTimer", cfg.spawn_delay or 0.35, 0, function()
-        if ZS.State ~= ZS.State.WAVE then timer.Remove("ZS_SpawnTimer") return end
+        if ZS.CurrentState ~= ZS.State.WAVE then timer.Remove("ZS_SpawnTimer") return end
         if ZS.PendingSpawns <= 0 then timer.Remove("ZS_SpawnTimer") return end
         if ZS.SpawnOneZombie() then
             ZS.PendingSpawns = ZS.PendingSpawns - 1
@@ -77,7 +77,7 @@ function ZS.CompleteWave()
 end
 
 function ZS.GameOver()
-    ZS.State = ZS.State.GAMEOVER
+    ZS.CurrentState = ZS.State.GAMEOVER
     ZS.BroadcastState()
     ZS.Notify("GAME OVER — siete arrivati all'ondata " .. ZS.Wave, "error")
     timer.Simple(10, ZS.ResetRound)
@@ -108,20 +108,20 @@ end
 -- TICK PRINCIPALE: controlla condizioni di fine ondata / game over
 -- ============================================================================
 hook.Add("Think", "ZS_WaveTick", function()
-    if not ZS.State then return end
+    if not ZS.CurrentState then return end
 
-    if ZS.State == ZS.State.WAITING then
+    if ZS.CurrentState == ZS.State.WAITING then
         -- Avvia la partita appena c'è almeno un player
         if #player.GetAll() > 0 and not timer.Exists("ZS_FirstStart") then
             timer.Create("ZS_FirstStart", 5, 1, function()
-                if ZS.State == ZS.State.WAITING then
+                if ZS.CurrentState == ZS.State.WAITING then
                     ZS.BuildSpawnPoints()
                     ZS.EnterBuyTime()
                 end
             end)
         end
 
-    elseif ZS.State == ZS.State.WAVE then
+    elseif ZS.CurrentState == ZS.State.WAVE then
         -- Fine ondata: nessun alive e nessuna coda di spawn
         if ZS.ZombiesAlive <= 0 and ZS.PendingSpawns <= 0 then
             ZS.CompleteWave()
@@ -153,14 +153,14 @@ end)
 -- In buytime sei invulnerabile e puoi rigenerarti
 hook.Add("EntityTakeDamage", "ZS_BuyProtect", function(target, dmg)
     if not target:IsPlayer() then return end
-    if ZS.State == ZS.State.BUYTIME then
+    if ZS.CurrentState == ZS.State.BUYTIME then
         return true -- blocca ogni danno durante gli acquisti
     end
 end)
 
 -- Respawn automatico dei morti durante il buytime
 timer.Create("ZS_RespawnCheck", 2, 0, function()
-    if ZS.State ~= ZS.State.BUYTIME then return end
+    if ZS.CurrentState ~= ZS.State.BUYTIME then return end
     for _, ply in ipairs(player.GetAll()) do
         if not ply:Alive() then
             ply:Spawn()
@@ -176,11 +176,11 @@ end)
 -- ============================================================================
 concommand.Add("zs_skipwave", function(caller)
     if IsValid(caller) and not caller:IsSuperAdmin() then return end
-    if ZS.State == ZS.State.WAVE then
+    if ZS.CurrentState == ZS.State.WAVE then
         for npc in pairs(ZS.ActiveZombies) do
             if IsValid(npc) then npc:Remove() end
         end
-    elseif ZS.State == ZS.State.BUYTIME then
+    elseif ZS.CurrentState == ZS.State.BUYTIME then
         ZS.StartWave()
     end
 end)

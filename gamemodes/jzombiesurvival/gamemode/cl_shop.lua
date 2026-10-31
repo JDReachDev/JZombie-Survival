@@ -428,11 +428,11 @@ function ZS.OpenShop()
     end
 
     for _, cat in ipairs(ZS.Categories or {}) do
-        local items = byCat[cat]
-        if items and #items > 0 then
+        local items = byCat[cat] or {}
+        if #items > 0 then
             local scroll = vgui.Create("DScrollPanel")
             scroll:AddItem(vgui.Create("DLabel")):SetText("")
-            for _, wCfg in ipairs(items) do
+            for _, wCfg in ipairs(items or {}) do
                 BuildWeaponRow(scroll, wCfg)
             end
             sheets:AddSheet(cat, scroll, nil, false, false, "Armi: " .. cat)

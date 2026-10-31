@@ -11,6 +11,9 @@ local COLORS = {
     error   = Color(255, 80, 80),
 }
 
+-- Definisci il font per le notifiche (deve essere creato prima dell'uso)
+surface.CreateFont("ZS_Notify", { font = "Trebuchet22", size = 16, weight = 600 })
+
 function ZS.PushNotify(text, typ)
     table.insert(ZS.Notifications, {
         text  = text,
@@ -35,7 +38,7 @@ hook.Add("HUDPaint", "ZS_DrawNotifications", function()
             if t < 0.3 then alpha = math.Round(255 * (t / 0.3)) end
             if t > n.life - 0.5 then alpha = math.Round(255 * ((n.life - t) / 0.5)) end
 
-            surface.SetFont("Trebuchet22")
+            surface.SetFont("ZS_Notify")
             local w = surface.GetTextSize(n.text)
             local padX, padY = 18, 10
             local bx = ScrW() / 2 - (w + padX * 2) / 2
@@ -44,7 +47,7 @@ hook.Add("HUDPaint", "ZS_DrawNotifications", function()
             surface.SetDrawColor(COLORS[n.typ] or COLORS.info)
             surface.DrawRect(bx, y, 4, 34)
 
-            draw.SimpleText(n.text, "Trebuchet22", ScrW() / 2, y + 6, Color(255, 255, 255, alpha), TEXT_ALIGN_CENTER)
+            draw.SimpleText(n.text, "ZS_Notify", ScrW() / 2, y + 6, Color(255, 255, 255, alpha), TEXT_ALIGN_CENTER)
             y = y + 42
         end
     end

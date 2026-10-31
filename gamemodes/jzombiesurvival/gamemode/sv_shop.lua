@@ -44,7 +44,7 @@ net.Receive("ZS_PurchaseWeapon", function(_, ply)
     end
 
     -- Buytime gate (a meno che la cvar non permetta acquisti durante l'ondata)
-    if ZS.State ~= ZS.State.BUYTIME and GetConVarNumber("zs_allowbuyduringwave") == 0 then
+    if ZS.CurrentState ~= ZS.State.BUYTIME and GetConVarNumber("zs_allowbuyduringwave") == 0 then
         ply:ChatPrint("[Shop] Puoi acquistare solo tra un'ondata e l'altra.")
         return
     end
@@ -95,7 +95,7 @@ net.Receive("ZS_PurchaseAmmo", function(_, ply)
         return
     end
 
-    if ZS.State ~= ZS.State.BUYTIME and GetConVarNumber("zs_allowbuyduringwave") == 0 then
+    if ZS.CurrentState ~= ZS.State.BUYTIME and GetConVarNumber("zs_allowbuyduringwave") == 0 then
         ply:ChatPrint("[Shop] Puoi acquistare solo tra un'ondata e l'altra.")
         return
     end
@@ -148,7 +148,7 @@ net.Receive("ZS_SellWeapon", function(_, ply)
         return
     end
 
-    if ZS.State ~= ZS.State.BUYTIME then
+    if ZS.CurrentState ~= ZS.State.BUYTIME then
         ply:ChatPrint("[Shop] Puoi vendere solo tra un'ondata e l'altra.")
         return
     end
@@ -183,7 +183,7 @@ net.Receive("ZS_PurchaseBarricade", function(_, ply)
     end
 
     -- Buytime gate
-    if ZS.State ~= ZS.State.BUYTIME and GetConVarNumber("zs_allowbuyduringwave") == 0 then
+    if ZS.CurrentState ~= ZS.State.BUYTIME and GetConVarNumber("zs_allowbuyduringwave") == 0 then
         ply:ChatPrint("[Shop] Puoi acquistare solo tra un'ondata e l'altra.")
         return
     end

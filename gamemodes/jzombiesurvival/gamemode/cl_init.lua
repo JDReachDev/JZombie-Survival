@@ -11,7 +11,7 @@ include("cl_notifications.lua")
 -- Replica stato globale -> locale perché derma/netstring funzionino subito
 net.Receive("ZS_SyncState", function()
     ZS.CurrentWave      = net.ReadInt(16)
-    ZS.CurrentState     = net.ReadShort()
+    ZS.CurrentState     = net.ReadUInt(8)
     ZS.CurrentCountdown = net.ReadFloat()
     ZS.ZombiesAlive     = net.ReadInt(16)
 end)
