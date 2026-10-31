@@ -3,4 +3,5 @@
 	"title"		"JZombie Survival"
 	"base"		"sandbox"
 	"maps"		"^gm_|^zs_"
+	"menusystem"	"1"
 }
